@@ -1,12 +1,11 @@
 {
-  "name": "@instructure/ui-dialog",
+  "name": "@instructure/ui-focus-manager",
   "version": "8.7.0",
-  "description": "A utility component for managing keyboard accessibility and screen reader behavior",
+  "description": "A UI component library made by Instructure Inc.",
   "author": "Instructure, Inc. Engineering and Product Design",
   "type": "commonjs",
   "module": "./es/index.js",
   "main": "./lib/index.js",
-  "types": "./types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/instructure/instructure-ui.git"
@@ -18,29 +17,28 @@
     "lint:fix": "ui-test --lint --fix",
     "clean": "ui-build --clean",
     "build": "ui-build --modules es,cjs",
-    "build:watch": "yarn ts:check --watch & ui-build --watch",
-    "build:types": "tsc -p tsconfig.build.json",
-    "ts:check": "tsc -p tsconfig.build.json --noEmit --emitDeclarationOnly false"
+    "build:watch": "ui-build --watch",
+    "build:types": "ui-scripts --types"
   },
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@instructure/ui-a11y-utils": "8.7.0",
-    "@instructure/ui-dom-utils": "8.7.0",
+    "@instructure/emotion": "8.7.0",
     "@instructure/ui-react-utils": "8.7.0",
     "@instructure/ui-testable": "8.7.0",
+    "focus-trap-react": "^8.7.0",
     "prop-types": "^15",
-    "@instructure/ui-focus-manager": "8.7.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@instructure/console": "8.7.0",
-    "@instructure/shared-types": "8.7.0",
     "@instructure/ui-babel-preset": "8.7.0",
-    "@instructure/ui-prop-types": "8.7.0",
-    "@instructure/ui-test-utils": "8.7.0"
+    "@instructure/ui-color-utils": "8.7.0",
+    "@instructure/ui-test-locator": "8.7.0",
+    "@instructure/ui-test-utils": "8.7.0",
+    "@instructure/ui-themes": "8.7.0"
   },
   "peerDependencies": {
-    "react": ">=16.8 <=17"
+    "react": "^16.8"
   },
   "publishConfig": {
     "access": "public"
