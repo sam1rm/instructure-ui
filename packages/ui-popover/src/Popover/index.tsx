@@ -767,6 +767,7 @@ class Popover extends Component<Props & BidirectionalProps> {
       // to manage the content FocusRegion, when showing
       content = (
         <Dialog
+          test="Ima popover"
           open={this.shown}
           label={this.props.screenReaderLabel}
           // @ts-expect-error ts-migrate(2339) FIXME: Property '_dialog' does not exist on type 'Popover... Remove this comment to see the full error message

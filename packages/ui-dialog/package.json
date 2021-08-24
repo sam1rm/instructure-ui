@@ -27,10 +27,11 @@
     "@babel/runtime": "^7.13.10",
     "@instructure/ui-a11y-utils": "8.7.0",
     "@instructure/ui-dom-utils": "8.7.0",
+    "@instructure/ui-focus-manager": "8.7.0",
     "@instructure/ui-react-utils": "8.7.0",
     "@instructure/ui-testable": "8.7.0",
     "prop-types": "^15",
-    "@instructure/ui-focus-manager": "8.7.0"
+    "react-outside-click-handler": "^1.3.0"
   },
   "devDependencies": {
     "@instructure/console": "8.7.0",

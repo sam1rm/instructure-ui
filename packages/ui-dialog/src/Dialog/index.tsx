@@ -23,6 +23,7 @@
  */
 
 import React, { Component } from 'react'
+import OutsideClickHandler from 'react-outside-click-handler'
 import PropTypes from 'prop-types'
 import { FocusManager } from '@instructure/ui-focus-manager'
 import { omitProps, getElementType } from '@instructure/ui-react-utils'
@@ -34,7 +35,6 @@ import {
 } from '@instructure/ui-dom-utils'
 import { logError as error } from '@instructure/console'
 
-import { FocusRegionManager } from '@instructure/ui-a11y-utils'
 import { OtherHTMLAttributes } from '@instructure/ui-prop-types'
 
 type Props = {
@@ -65,6 +65,10 @@ category: components/utilities
 **/
 
 class Dialog extends Component<Props & OtherHTMLAttributes<Props>> {
+  constructor(props: any) {
+    super(props)
+    this.onEscPress = this.onEscPress.bind(this)
+  }
   static readonly componentId = 'Dialog'
 
   static propTypes = {
@@ -153,12 +157,23 @@ class Dialog extends Component<Props & OtherHTMLAttributes<Props>> {
   _raf: RequestAnimationFrameType[] = []
   _focusRegion = null
 
+  onEscPress(event: KeyboardEvent) {
+    if (
+      event.keyCode === 27 &&
+      this.props.shouldCloseOnEscape &&
+      this.props.onDismiss &&
+      hasNoDialogChildren
+    ) {
+      this.props.onDismiss()
+    }
+  }
+
   componentDidMount() {
     if (this.props.open) {
       this.open()
     }
+    //document.addEventListener('keydown', this.onEscPress, false)
   }
-
   // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'prevProps' implicitly has an 'any' type... Remove this comment to see the full error message
   componentDidUpdate(prevProps) {
     const { open } = this.props
@@ -184,6 +199,7 @@ class Dialog extends Component<Props & OtherHTMLAttributes<Props>> {
     this._timeouts = []
     this._raf.forEach((request) => request.cancel())
     this._raf = []
+    document.removeEventListener('keydown', this.onEscPress, false)
   }
 
   open() {
@@ -202,7 +218,7 @@ class Dialog extends Component<Props & OtherHTMLAttributes<Props>> {
 
   close() {
     //@ts-expect-error ts-migration
-    this.props.onclose()
+    this.props.onClose()
   }
 
   blur() {
@@ -233,19 +249,25 @@ class Dialog extends Component<Props & OtherHTMLAttributes<Props>> {
 
   render() {
     const ElementType = getElementType(Dialog, this.props)
-
     return this.props.open ? (
-      <FocusManager>
-        <ElementType
-          {...omitProps(this.props, Dialog.propTypes)}
-          ref={this.getRef}
-          role={this.props.label ? 'dialog' : null}
-          aria-label={this.props.label}
-          className={this.props.className} // eslint-disable-line react/prop-types
-        >
-          {this.props.children}
-        </ElementType>
-      </FocusManager>
+      <OutsideClickHandler
+        onOutsideClick={() => {
+          this.props.onDismiss && this.props.onDismiss()
+        }}
+        disabled={!this.props.shouldCloseOnDocumentClick}
+      >
+        <FocusManager onDismiss={this.props.onDismiss}>
+          <ElementType
+            {...omitProps(this.props, Dialog.propTypes)}
+            ref={this.getRef}
+            role={this.props.label ? 'dialog' : null}
+            aria-label={this.props.label}
+            className={this.props.className} // eslint-disable-line react/prop-types
+          >
+            {this.props.children}
+          </ElementType>
+        </FocusManager>
+      </OutsideClickHandler>
     ) : null
   }
 }
