@@ -25,6 +25,7 @@
 import { useTheme as useEmotionTheme } from '@emotion/react'
 import { canvas } from '@instructure/ui-themes'
 import { isEmpty } from '@instructure/ui-utils'
+import { ThemeOrOverride } from './EmotionTypes'
 
 /**
  * ---
@@ -35,7 +36,7 @@ import { isEmpty } from '@instructure/ui-utils'
  * @returns {object} the theme object
  */
 export const useTheme = () => {
-  let theme = useEmotionTheme()
+  let theme = useEmotionTheme() as ThemeOrOverride
   // TODO type theme properly, then this cast might not be needed.
   if (isEmpty(theme as Record<string, unknown>)) {
     if (process.env.NODE_ENV !== 'production') {

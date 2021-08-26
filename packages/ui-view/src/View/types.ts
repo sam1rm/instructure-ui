@@ -31,9 +31,10 @@ import {
   BorderWidth,
   BorderRadii,
   Shadow,
-  Stacking
+  Stacking,
+  ComponentStyle
 } from '@instructure/emotion'
-import { AsElementType } from '@instructure/shared-types'
+import { AsElementType, ViewTheme } from '@instructure/shared-types'
 
 export type ViewOwnProps = {
   /**
@@ -170,11 +171,13 @@ export type ViewOwnProps = {
   cursor?: any
 }
 
-export type ViewProps = ViewOwnProps & WithStyleProps
+export type ViewProps = ViewOwnProps & WithStyleProps<ViewTheme, ViewStyle>
 
 export type AllowedPropKeys = Readonly<
   Array<keyof (ViewOwnProps & WithStyleProps)>
 >
+
+export type ViewStyle = ComponentStyle<'view' | 'inlineStyles'>
 
 export const propTypes = {
   as: PropTypes.elementType,

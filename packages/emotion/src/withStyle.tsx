@@ -22,20 +22,36 @@
  * SOFTWARE.
  */
 
-import React, { forwardRef, useState } from 'react'
+import React, {
+  forwardRef,
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+  useState
+} from 'react'
 import { decorator } from '@instructure/ui-decorator'
 import { isEqual } from 'lodash'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 import { useTextDirectionContext } from '@instructure/ui-i18n'
 import { bidirectionalPolyfill } from './styleUtils/bidirectionalPolyfill'
 import { getComponentThemeOverride } from './getComponentThemeOverride'
+import { BaseTheme, ComponentTheme } from '@instructure/shared-types'
+import {
+  ComponentStyle,
+  GenerateComponentTheme,
+  GenerateStyle,
+  Props
+} from './EmotionTypes'
 import { useTheme } from './useTheme'
-import { CSSObject } from '@emotion/react'
 
-export type WithStyleProps = Partial<{
-  styles: CSSObject
-  makeStyles: (...extraArgs: unknown[]) => void
-}>
+export interface WithStyleProps<
+  Theme extends ComponentTheme = ComponentTheme,
+  Style extends ComponentStyle = ComponentStyle
+> {
+  styles?: Style
+  makeStyles?: (extraArgs?: Record<string, unknown>) => void
+  themeOverride?: Partial<Theme>
+}
 
 /**
  * ---
@@ -106,51 +122,65 @@ export type WithStyleProps = Partial<{
  * @returns {ReactElement} The decorated WithStyle Component
  */
 const withStyle = decorator(
-  (ComposedComponent: any, generateStyle: any, generateComponentTheme: any) => {
+  (
+    // TODO: better type
+    ComposedComponent: any,
+    generateStyle: GenerateStyle,
+    generateComponentTheme: GenerateComponentTheme
+  ) => {
     const displayName = ComposedComponent.displayName || ComposedComponent.name
 
-    const WithStyle = forwardRef((props, ref) => {
-      const theme = useTheme()
-      const dir = useTextDirectionContext()
-      const componentProps = {
-        ...ComposedComponent.defaultProps,
-        ...props
-      }
-      const themeOverride = getComponentThemeOverride(
-        theme,
-        [displayName, ComposedComponent.componentId],
-        componentProps
-      )
-      const componentTheme =
-        typeof generateComponentTheme === 'function'
-          ? { ...generateComponentTheme(theme), ...themeOverride }
-          : {}
-      const [styles, setStyles] = useState(
-        generateStyle
-          ? bidirectionalPolyfill(
-              generateStyle(componentTheme, componentProps, {}),
-              dir
-            )
-          : {}
-      )
-      const makeStyleHandler = (...extraArgs: any[]) => {
-        const calculatedStyles = bidirectionalPolyfill(
-          generateStyle(componentTheme, componentProps, ...extraArgs),
-          dir
-        )
-        if (!isEqual(calculatedStyles, styles)) {
-          setStyles(calculatedStyles)
+    const WithStyle: ForwardRefExoticComponent<
+      PropsWithoutRef<Props> & RefAttributes<any>
+    > & { generateComponentTheme?: GenerateComponentTheme } = forwardRef(
+      (props, ref) => {
+        const theme = useTheme()
+        const dir = useTextDirectionContext()
+        const componentProps: Props = {
+          ...ComposedComponent.defaultProps,
+          ...props
         }
+        const themeOverride = getComponentThemeOverride(
+          theme,
+          [displayName, ComposedComponent.componentId],
+          componentProps
+        )
+        const componentTheme: ComponentTheme =
+          typeof generateComponentTheme === 'function'
+            ? {
+                ...generateComponentTheme(theme as BaseTheme),
+                ...themeOverride
+              }
+            : {}
+        const [styles, setStyles] = useState(
+          generateStyle
+            ? bidirectionalPolyfill(
+                generateStyle(componentTheme, componentProps, {}),
+                // @ts-expect-error TODO: this shouldn't be "auto"
+                dir
+              )
+            : {}
+        )
+        const makeStyleHandler: WithStyleProps['makeStyles'] = (extraArgs) => {
+          const calculatedStyles = bidirectionalPolyfill(
+            generateStyle(componentTheme, componentProps, extraArgs),
+            // @ts-expect-error TODO: this shouldn't be "auto"
+            dir
+          )
+          if (!isEqual(calculatedStyles, styles)) {
+            setStyles(calculatedStyles)
+          }
+        }
+        return (
+          <ComposedComponent
+            ref={ref}
+            makeStyles={makeStyleHandler}
+            styles={styles}
+            {...props}
+          />
+        )
       }
-      return (
-        <ComposedComponent
-          ref={ref}
-          makeStyles={makeStyleHandler}
-          styles={styles}
-          {...props}
-        />
-      )
-    })
+    )
     hoistNonReactStatics(WithStyle, ComposedComponent)
     // we have to pass these on, because sometimes we need to
     // access propTypes of the component in other components
@@ -158,7 +188,7 @@ const withStyle = decorator(
     WithStyle.propTypes = ComposedComponent.propTypes
     WithStyle.defaultProps = ComposedComponent.defaultProps
     // we are exposing the theme generator for the docs generation
-    ;(WithStyle as any).generateComponentTheme = generateComponentTheme
+    WithStyle.generateComponentTheme = generateComponentTheme
     // we have to add defaults to makeStyles and styles added by this decorator
     // eslint-disable-next-line no-param-reassign
     ComposedComponent.defaultProps = {

@@ -22,30 +22,17 @@
  * SOFTWARE.
  */
 import React from 'react'
-import { ThemeProvider } from '@emotion/react'
 import { merge, cloneDeep } from 'lodash'
+
+import { ThemeProvider } from '@emotion/react'
+import { BaseTheme } from '@instructure/shared-types'
+
 import {
-  ComponentThemeMap,
-  DeepPartial,
-  BaseTheme
-} from '@instructure/shared-types'
+  Overrides,
+  ThemeOrOverride,
+  SpecificThemeOverride
+} from '../EmotionTypes'
 
-type PartialTheme = DeepPartial<Omit<BaseTheme, 'key'>>
-type ComponentOverride =
-  | DeepPartial<ComponentThemeMap>
-  // this is needed for user defined components which we can't possibly type
-  | { [otherComponent: string]: Record<string, unknown> }
-
-type ThemeOverride =
-  | PartialTheme
-  | { [key: string]: PartialTheme | { componentOverrides?: ComponentOverride } }
-
-type Overrides = {
-  themeOverrides?: ThemeOverride
-  componentOverrides?: ComponentOverride
-}
-
-type ThemeOrOverride = BaseTheme | PartialTheme | Overrides
 type ThemeProviderProps = {
   theme: ThemeOrOverride
 }
@@ -125,8 +112,9 @@ const getTheme = (themeOrOverride: ThemeOrOverride) => (
 
   // we pick the overrides for the current theme from the override object
   const currentThemeOverrides =
-    //@ts-expect-error TODO: fix this code, this way it is really hard to type
-    themeOrOverride?.themeOverrides?.[themeName] || {}
+    ((themeOrOverride as Overrides)?.themeOverrides as SpecificThemeOverride)?.[
+      themeName
+    ] || {}
 
   return merge(
     {},

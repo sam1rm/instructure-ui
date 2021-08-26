@@ -28,3 +28,5 @@ export * from '@emotion/react'
 export { EmotionThemeProvider } from './EmotionThemeProvider'
 export * from './styleUtils'
 export * from './withStyle'
+
+export type { ComponentStyle } from './EmotionTypes'

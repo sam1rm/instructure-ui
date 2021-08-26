@@ -141,8 +141,7 @@ class Position extends Component<PositionProps, PositionState> {
 
   componentDidMount() {
     this.toggleLocatorAttributes(true)
-    // @ts-expect-error ts-migrate(2722) FIXME: Cannot invoke an object which is possibly 'undefin... Remove this comment to see the full error message
-    this.props.makeStyles()
+    this.props.makeStyles?.()
   }
 
   componentDidUpdate(prevProps: PositionProps, prevState: PositionState) {
@@ -171,8 +170,7 @@ class Position extends Component<PositionProps, PositionState> {
       })
     }
 
-    // @ts-expect-error ts-migrate(2722) FIXME: Cannot invoke an object which is possibly 'undefin... Remove this comment to see the full error message
-    this.props.makeStyles()
+    this.props.makeStyles?.()
   }
 
   componentWillUnmount() {
@@ -279,8 +277,7 @@ class Position extends Component<PositionProps, PositionState> {
         },
         style: {
           boxSizing: 'border-box',
-          // @ts-expect-error TODO: type withStyle props
-          zIndex: this.props.styles.zIndex,
+          zIndex: this.props.styles?.zIndex,
           ...content.props.style,
           ...this.state.style
         },

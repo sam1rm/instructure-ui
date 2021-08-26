@@ -24,14 +24,15 @@
 
 import React from 'react'
 
+import { WithStyleProps, ComponentStyle } from '@instructure/emotion'
+import { PositionTheme } from '@instructure/shared-types'
+
 import {
   PositionConstraint,
   PositionMountNode,
   PlacementPropValues,
   ElementPosition
 } from '../PositionPropTypes'
-
-import { WithStyleProps } from '@instructure/emotion'
 
 type PositionProps = {
   /**
@@ -106,14 +107,16 @@ type PositionProps = {
    * The content to be positioned
    */
   children: React.ReactNode
-} & WithStyleProps
+} & WithStyleProps<PositionTheme, PositionStyle>
 
 type PositionState = {
   positioned: boolean
 } & ElementPosition
 
+type PositionStyle = ComponentStyle<'zIndex'>
+
 type Position = ElementPosition['style'] & {
   placement: ElementPosition['placement']
 }
 
-export type { PositionProps, PositionState }
+export type { PositionProps, PositionState, PositionStyle }

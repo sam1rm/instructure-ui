@@ -22,6 +22,12 @@
  * SOFTWARE.
  */
 
+import { ThemeOrOverride, Overrides, ComponentOverride } from './EmotionTypes'
+import { ComponentTheme } from '@instructure/shared-types'
+import { WithStyleProps } from './withStyle'
+
+type ComponentName = keyof ComponentOverride
+
 /**
  * ---
  * private: true
@@ -35,14 +41,22 @@
  * @returns {object} The calculated theme override object
  */
 export const getComponentThemeOverride = (
-  theme: any,
-  componentName: any,
-  props: any
-) => {
-  const componentOverride =
-    theme?.componentOverrides &&
-    (theme.componentOverrides[componentName[0]] ||
-      theme.componentOverrides[componentName[1]])
+  theme: ThemeOrOverride,
+  componentName: [ComponentName] | [ComponentName, ComponentName],
+  props: { [k: string]: unknown } & WithStyleProps
+): ComponentTheme => {
+  let componentOverride: ComponentTheme = {}
+  const overrides = (theme as Overrides).componentOverrides
 
-  return { ...componentOverride, ...(props?.themeOverride ?? {}) }
+  if (overrides) {
+    componentOverride =
+      overrides[componentName[0]] ||
+      (componentName[1] && overrides[componentName[1]]) ||
+      {}
+  }
+
+  return {
+    ...componentOverride,
+    ...(props?.themeOverride ?? {})
+  }
 }
