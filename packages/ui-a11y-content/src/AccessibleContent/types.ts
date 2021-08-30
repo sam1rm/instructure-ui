@@ -23,10 +23,11 @@
  */
 
 import { PropsWithChildren } from 'react'
+import PropTypes from 'prop-types'
 
-import { AsElementType } from '@instructure/shared-types'
+import type { AsElementType, PropValidators } from '@instructure/shared-types'
 
-export type AccessibleContentProps = PropsWithChildren<{
+type AccessibleContentOwnProps = PropsWithChildren<{
   alt?: string
 
   /**
@@ -34,3 +35,20 @@ export type AccessibleContentProps = PropsWithChildren<{
    */
   as: AsElementType
 }>
+
+type PropKeys = keyof AccessibleContentOwnProps
+
+type AllowedPropKeys = Readonly<Array<PropKeys>>
+
+type AccessibleContentProps = AccessibleContentOwnProps
+
+const propTypes: PropValidators<PropKeys> = {
+  alt: PropTypes.string,
+  as: PropTypes.elementType,
+  children: PropTypes.node
+}
+
+const allowedProps: AllowedPropKeys = ['alt', 'as', 'children']
+
+export type { AccessibleContentProps }
+export { propTypes, allowedProps }

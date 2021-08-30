@@ -24,15 +24,14 @@
 
 /** @jsx jsx */
 import { Component } from 'react'
-import PropTypes from 'prop-types'
 
 import { passthroughProps, getElementType } from '@instructure/ui-react-utils'
-import { OtherHTMLAttributes } from '@instructure/shared-types'
 
 import { withStyle, jsx } from '@instructure/emotion'
 
 import generateStyle from './styles'
-import { ScreenReaderContentProps } from './types'
+import { propTypes, allowedProps } from './types'
+import type { ScreenReaderContentProps } from './types'
 
 /**
 ---
@@ -42,19 +41,12 @@ category: components/utilities
 @tsProps
 **/
 @withStyle(generateStyle, null)
-class ScreenReaderContent extends Component<
-  ScreenReaderContentProps & OtherHTMLAttributes<ScreenReaderContentProps>
-> {
+class ScreenReaderContent extends Component<ScreenReaderContentProps> {
   static readonly componentId = 'ScreenReaderContent'
 
-  static propTypes = {
-    // eslint-disable-next-line react/require-default-props
-    makeStyles: PropTypes.func,
-    // eslint-disable-next-line react/require-default-props
-    styles: PropTypes.object,
-    as: PropTypes.elementType,
-    children: PropTypes.node
-  }
+  static propTypes = propTypes
+
+  static allowedProps = allowedProps
 
   static defaultProps = {
     as: 'span',
@@ -62,13 +54,11 @@ class ScreenReaderContent extends Component<
   }
 
   componentDidMount() {
-    // @ts-expect-error ts-migrate(2722) FIXME: Cannot invoke an object which is possibly 'undefin... Remove this comment to see the full error message
-    this.props.makeStyles()
+    this.props.makeStyles?.()
   }
 
   componentDidUpdate() {
-    // @ts-expect-error ts-migrate(2722) FIXME: Cannot invoke an object which is possibly 'undefin... Remove this comment to see the full error message
-    this.props.makeStyles()
+    this.props.makeStyles?.()
   }
 
   render() {
@@ -78,7 +68,7 @@ class ScreenReaderContent extends Component<
     return (
       <ElementType
         {...passthroughProps(props)}
-        css={styles.screenReaderContent}
+        css={styles?.screenReaderContent}
       >
         {children}
       </ElementType>
