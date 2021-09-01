@@ -25,11 +25,7 @@
 import { PropsWithChildren } from 'react'
 import PropTypes from 'prop-types'
 
-import type {
-  AsElementType,
-  DefaultProps,
-  PropValidators
-} from '@instructure/shared-types'
+import type { AsElementType, PropValidators } from '@instructure/shared-types'
 
 type PresentationContentOwnProps = PropsWithChildren<{
   /**
@@ -51,7 +47,7 @@ const propTypes: PropValidators<PropKeys> = {
 
 const allowedProps: AllowedPropKeys = ['as', 'children']
 
-const defaultProps: DefaultProps<PresentationContentOwnProps> = {
+const defaultProps = {
   as: 'span',
   children: null
 }
