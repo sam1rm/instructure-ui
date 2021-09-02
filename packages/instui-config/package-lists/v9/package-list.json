@@ -35,6 +35,7 @@
   "@instructure/ui-codemods",
   "@instructure/ui-color-utils",
   "@instructure/ui-date-input",
+  "@instructure/ui-date-time-input",
   "@instructure/ui-decorator",
   "@instructure/ui-dialog",
   "@instructure/ui-dom-utils",
