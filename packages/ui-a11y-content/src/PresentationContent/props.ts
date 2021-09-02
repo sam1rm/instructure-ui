@@ -47,10 +47,5 @@ const propTypes: PropValidators<PropKeys> = {
 
 const allowedProps: AllowedPropKeys = ['as', 'children']
 
-const defaultProps = {
-  as: 'span',
-  children: null
-}
-
 export type { PresentationContentProps }
-export { propTypes, allowedProps, defaultProps }
+export { propTypes, allowedProps }

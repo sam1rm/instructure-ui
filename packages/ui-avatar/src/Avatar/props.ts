@@ -137,13 +137,5 @@ const allowedProps: AllowedPropKeys = [
   'elementRef'
 ]
 
-const defaultProps = {
-  size: 'medium',
-  color: 'default',
-  shape: 'circle',
-  display: 'inline-block',
-  onImageLoaded: (_event: SyntheticEvent) => {}
-}
-
 export type { AvatarProps }
-export { propTypes, defaultProps, allowedProps }
+export { propTypes, allowedProps }
