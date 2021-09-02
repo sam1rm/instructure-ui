@@ -161,8 +161,7 @@ class Dialog extends Component<Props & OtherHTMLAttributes<Props>> {
     if (
       event.keyCode === 27 &&
       this.props.shouldCloseOnEscape &&
-      this.props.onDismiss &&
-      hasNoDialogChildren
+      this.props.onDismiss
     ) {
       this.props.onDismiss()
     }
@@ -203,8 +202,6 @@ class Dialog extends Component<Props & OtherHTMLAttributes<Props>> {
   }
 
   open() {
-    const { open, contentElement, ...options } = this.props
-
     this._raf.push(
       requestAnimationFrame(() => {
         // It needs to wait a heartbeat until the content is fully loaded
