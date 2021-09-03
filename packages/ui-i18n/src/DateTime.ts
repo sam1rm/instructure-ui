@@ -46,11 +46,12 @@ function now(locale: string, timezone: string) {
 }
 
 /**
- * Parses a string into a localized ISO 8601 string with timezone
- * @param {String} dateString
- * @param {String} locale
- * @param {String} timezone
- * @returns {String} ISO 8601 string
+ * Parses a string into a localized ISO 8601 string with timezone using
+ * moment.js
+ * @param dateString
+ * @param locale
+ * @param timezone
+ * @returns ISO8601 string
  */
 function parse(dateString: string, locale: string, timezone: string) {
   _checkParams(locale, timezone)
